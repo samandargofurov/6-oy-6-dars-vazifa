@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { FaEdit } from "react-icons/fa";
+import { FaEye } from "react-icons/fa";
+import { FaEyeSlash } from "react-icons/fa";
 import { nanoid } from "nanoid";
 
 import { validate, getUsers } from "./utilits/functions";
@@ -13,6 +15,9 @@ function App() {
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
   const [nat, setNat] = useState("");
+  const [isDelete, setIsDelete] = useState(false);
+  const [update, setUpdate] = useState(false);
+  const [updateId, setUpdateId] = useState('');
 
   useEffect(() => {
     let u = getUsers();
@@ -34,18 +39,48 @@ function App() {
         age: age,
         pass: pass,
         nat: nat,
-        id: nanoid()
-      }
+        id: nanoid(),
+        visible: false,
+      };
 
       let copied = JSON.parse(JSON.stringify(users));
-      copied.push(user)
-      localStorage.setItem('users', JSON.stringify(copied));
-      setName('');
+      copied.push(user);
+      localStorage.setItem("users", JSON.stringify(copied));
+      setName("");
       setAge(0);
-      setEmail('');
-      setPass('')
-      setNat('');
+      setEmail("");
+      setPass("");
     }
+  }
+
+  function handleShow(command, user) {
+    let copied = JSON.parse(JSON.stringify(users));
+    copied = copied.map(arg => {
+      if (arg.id == user.id && command == "show") {
+        arg.visible = true;
+      }
+
+      if (arg.id == user.id && command == "hide") {
+        arg.visible = false;
+      }
+
+      return arg;
+    });
+
+    setUsers(copied);
+  }
+
+  function handleUpdate() {
+
+  }
+
+  function handleUpdateItem(user) {
+    setName(user.name)
+    setAge(user.age)
+    setEmail(user.email)
+    setPass(user.pass)
+    setUpdate(true)
+    setUpdateId(user.id)
   }
 
   return (
@@ -53,13 +88,15 @@ function App() {
       <div className="container">
         <h2 className="text-center mt-2 mb-3">Users information</h2>
 
-        <form className="w-50 mx-auto d-flex flex-column gap-3" onSubmit={handleSubmit}>
+        <form
+          className="w-50 mx-auto d-flex flex-column gap-3"
+        >
           <input
             type="text"
             className="form-control"
             placeholder="Enter Name"
             value={name}
-            onChange={(e) => {  
+            onChange={(e) => {
               setName(e.target.value);
             }}
           />
@@ -92,9 +129,8 @@ function App() {
           />
 
           <div className="radio">
-
             <div className="form-check">
-              <input 
+              <input
                 className="form-check-input"
                 type="radio"
                 name="flexRadioDefault"
@@ -104,7 +140,9 @@ function App() {
                   handleRadio(e.target.value);
                 }}
               />
-              <label className="form-check-label" htmlFor="uzbek">Uzbek</label>
+              <label className="form-check-label" htmlFor="uzbek">
+                Uzbek
+              </label>
             </div>
 
             <div className="form-check">
@@ -118,7 +156,9 @@ function App() {
                   handleRadio(e.target.value);
                 }}
               />
-              <label className="form-check-label" htmlFor="russian">Russian</label>
+              <label className="form-check-label" htmlFor="russian">
+                Russian
+              </label>
             </div>
 
             <div className="form-check">
@@ -132,11 +172,20 @@ function App() {
                   handleRadio(e.target.value);
                 }}
               />
-              <label className="form-check-label" htmlFor="english">English</label>
+              <label className="form-check-label" htmlFor="english">
+                English
+              </label>
             </div>
           </div>
 
-          <button className="btn btn-primary w-100 mt-4">Submit</button>
+          {
+            !update && <button onClick={handleSubmit} className="btn btn-primary w-100 mt-4">Submit</button>
+          }
+
+          {
+            update && <button onClick={handleUpdate} className="btn btn-primary w-100 mt-4">Update</button>
+          }
+
         </form>
 
         <table className="table table-striped mt-4">
@@ -153,26 +202,50 @@ function App() {
           </thead>
 
           <tbody>
-
-            <tr>
-              <td>1</td>
-              <td>john</td>
-              <td>34</td>
-              <td>john@gamil.com</td>
-              <td>123</td>
-              <td>uzbek</td>
-              <td>
-                <div className="d-flex gap-2">
-                  <FaRegTrashAlt />
-                  <FaEdit />
-                </div>
-              </td>
-            </tr>
-
+            {users.length > 0 &&
+              users.map((user, index) => {
+                return (
+                  <tr key={index}>
+                    <td>{index + 1}</td>
+                    <td>{user.name}</td>
+                    <td>{user.age}</td>
+                    <td>{user.email}</td>
+                    <td>
+                      <div className="d-flex gap-3">
+                        <span>{user.visible ? user.pass : "****"}</span>
+                        <span>
+                          {user.visible ? (
+                            <FaEye
+                              style={{ cursor: "pointer" }}
+                              onClick={() => {
+                                handleShow(() => {
+                                  handleShow("hide", user);
+                                });
+                              }}
+                            ></FaEye>
+                          ) : (
+                            <FaEyeSlash
+                              style={{ cursor: "pointer" }}
+                              onClick={() => {
+                                handleShow("show", user);
+                              }}
+                            ></FaEyeSlash>
+                          )}
+                        </span>
+                      </div>
+                    </td>
+                    <td>{user.nat}</td>
+                    <td>
+                      <div className="d-flex gap-2">
+                        <FaRegTrashAlt style={{ cursor: "pointer" }} />
+                        <FaEdit onClick={() => {handleUpdateItem(user)}} style={{ cursor: "pointer" }} />
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
           </tbody>
-          
         </table>
-        
       </div>
     </>
   );
