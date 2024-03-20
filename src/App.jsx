@@ -15,7 +15,6 @@ function App() {
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
   const [nat, setNat] = useState("");
-  const [isDelete, setIsDelete] = useState(false);
   const [update, setUpdate] = useState(false);
   const [updateId, setUpdateId] = useState("");
 
@@ -318,6 +317,7 @@ function App() {
                     <td>{user.name}</td>
                     <td>{user.age}</td>
                     <td>{user.email}</td>
+
                     <td>
                       <div className="d-flex gap-3">
                         <span>{user.visible ? user.pass : "****"}</span>
@@ -343,6 +343,7 @@ function App() {
                       </div>
                     </td>
                     <td>{user.nat}</td>
+                    
                     <td>
                       <div className="d-flex gap-2">
                         <FaRegTrashAlt onClick={() => {handleDelete(user)}} style={{ cursor: "pointer" }} />
