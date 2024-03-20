@@ -17,7 +17,7 @@ function App() {
   const [nat, setNat] = useState("");
   const [isDelete, setIsDelete] = useState(false);
   const [update, setUpdate] = useState(false);
-  const [updateId, setUpdateId] = useState('');
+  const [updateId, setUpdateId] = useState("");
 
   useEffect(() => {
     let u = getUsers();
@@ -55,7 +55,7 @@ function App() {
 
   function handleShow(command, user) {
     let copied = JSON.parse(JSON.stringify(users));
-    copied = copied.map(arg => {
+    copied = copied.map((arg) => {
       if (arg.id == user.id && command == "show") {
         arg.visible = true;
       }
@@ -71,16 +71,47 @@ function App() {
   }
 
   function handleUpdate() {
+    if (updateId) {
+      const isValid = validate(name, age, email, pass, nat);
 
+      if (isValid) {
+        const user = {
+          name: name,
+          email: email,
+          age: age,
+          pass: pass,
+          nat: nat,
+          id: updateId,
+          visible: false,
+        };
+
+        let copied = JSON.parse(JSON.stringify(users));
+        copied = copied.map((arg) => {
+          if (arg.id == updateId) {
+            arg = user;
+          }
+          return arg;
+        });
+
+        setUsers(copied);
+        localStorage.setItem("users", JSON.stringify(copied));
+        setUpdate(false);
+        setName("");
+        setAge(0);
+        setEmail("");
+        setPass("");
+      }
+    }
   }
 
   function handleUpdateItem(user) {
-    setName(user.name)
-    setAge(user.age)
-    setEmail(user.email)
-    setPass(user.pass)
-    setUpdate(true)
-    setUpdateId(user.id)
+    setName(user.name);
+    setAge(user.age);
+    setEmail(user.email);
+    setPass(user.pass);
+    setUpdate(true);
+    setNat(user.nat);
+    setUpdateId(user.id);
   }
 
   return (
@@ -88,9 +119,7 @@ function App() {
       <div className="container">
         <h2 className="text-center mt-2 mb-3">Users information</h2>
 
-        <form
-          className="w-50 mx-auto d-flex flex-column gap-3"
-        >
+        <form className="w-50 mx-auto d-flex flex-column gap-3">
           <input
             type="text"
             className="form-control"
@@ -128,64 +157,130 @@ function App() {
             }}
           />
 
-          <div className="radio">
-            <div className="form-check">
-              <input
-                className="form-check-input"
-                type="radio"
-                name="flexRadioDefault"
-                id="uzbek"
-                value="uzbek"
-                onChange={(e) => {
-                  handleRadio(e.target.value);
-                }}
-              />
-              <label className="form-check-label" htmlFor="uzbek">
-                Uzbek
-              </label>
+          {!update && (
+            <div className="radio">
+              <div className="form-check">
+                <input
+                  className="form-check-input"
+                  type="radio"
+                  name="flexRadioDefault"
+                  id="uzbek"
+                  value="uzbek"
+                  onChange={(e) => {
+                    handleRadio(e.target.value);
+                  }}
+                />
+                <label className="form-check-label" htmlFor="uzbek">
+                  Uzbek
+                </label>
+              </div>
+
+              <div className="form-check">
+                <input
+                  className="form-check-input"
+                  type="radio"
+                  name="flexRadioDefault"
+                  id="russian"
+                  value="russian"
+                  onChange={(e) => {
+                    handleRadio(e.target.value);
+                  }}
+                />
+                <label className="form-check-label" htmlFor="russian">
+                  Russian
+                </label>
+              </div>
+
+              <div className="form-check">
+                <input
+                  className="form-check-input"
+                  type="radio"
+                  name="flexRadioDefault"
+                  id="english"
+                  value="english"
+                  onChange={(e) => {
+                    handleRadio(e.target.value);
+                  }}
+                />
+                <label className="form-check-label" htmlFor="english">
+                  English
+                </label>
+              </div>
             </div>
+          )}
 
-            <div className="form-check">
-              <input
-                className="form-check-input"
-                type="radio"
-                name="flexRadioDefault"
-                id="russian"
-                value="russian"
-                onChange={(e) => {
-                  handleRadio(e.target.value);
-                }}
-              />
-              <label className="form-check-label" htmlFor="russian">
-                Russian
-              </label>
+          {update && (
+            <div className="radio">
+              <div className="form-check">
+                <input
+                  className="form-check-input"
+                  type="radio"
+                  name="flexRadioDefault"
+                  id="uzbek"
+                  checked={nat == "uzbek" ? true : false}
+                  value="uzbek"
+                  onChange={(e) => {
+                    handleRadio(e.target.value);
+                  }}
+                />
+                <label className="form-check-label" htmlFor="uzbek">
+                  Uzbek
+                </label>
+              </div>
+
+              <div className="form-check">
+                <input
+                  className="form-check-input"
+                  type="radio"
+                  name="flexRadioDefault"
+                  id="russian"
+                  checked={nat == "russian" ? true : false}
+                  value="russian"
+                  onChange={(e) => {
+                    handleRadio(e.target.value);
+                  }}
+                />
+                <label className="form-check-label" htmlFor="russian">
+                  Russian
+                </label>
+              </div>
+
+              <div className="form-check">
+                <input
+                  className="form-check-input"
+                  type="radio"
+                  name="flexRadioDefault"
+                  id="english"
+                  checked={nat == "english" ? true : false}
+                  value="english"
+                  onChange={(e) => {
+                    handleRadio(e.target.value);
+                  }}
+                />
+                <label className="form-check-label" htmlFor="english">
+                  English
+                </label>
+              </div>
             </div>
+          )}
 
-            <div className="form-check">
-              <input
-                className="form-check-input"
-                type="radio"
-                name="flexRadioDefault"
-                id="english"
-                value="english"
-                onChange={(e) => {
-                  handleRadio(e.target.value);
-                }}
-              />
-              <label className="form-check-label" htmlFor="english">
-                English
-              </label>
-            </div>
-          </div>
+          {!update && (
+            <button
+              onClick={handleSubmit}
+              className="btn btn-primary w-100 mt-4"
+            >
+              Submit
+            </button>
+          )}
 
-          {
-            !update && <button onClick={handleSubmit} className="btn btn-primary w-100 mt-4">Submit</button>
-          }
-
-          {
-            update && <button onClick={handleUpdate} className="btn btn-primary w-100 mt-4">Update</button>
-          }
-
+          {update && (
+            <button
+              onClick={handleUpdate}
+              className="btn btn-primary w-100 mt-4"
+            >
+              Update
+            </button>
+          )}
         </form>
 
         <table className="table table-striped mt-4">
@@ -238,7 +333,12 @@ function App() {
                     <td>
                       <div className="d-flex gap-2">
                         <FaRegTrashAlt style={{ cursor: "pointer" }} />
-                        <FaEdit onClick={() => {handleUpdateItem(user)}} style={{ cursor: "pointer" }} />
+                        <FaEdit
+                          onClick={() => {
+                            handleUpdateItem(user);
+                          }}
+                          style={{ cursor: "pointer" }}
+                        />
                       </div>
                     </td>
                   </tr>
