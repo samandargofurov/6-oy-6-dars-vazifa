@@ -49,8 +49,8 @@ function validate(name, age, email, pass, nat) {
 function getUsers() {
   let users = [];
 
-  if (localStorage.getItem("users")) {
-    users = JSON.parse(localStorage.getItem("users"));
+  if (localStorage.getItem('users')) {
+    users = JSON.parse(localStorage.getItem('users'));
   }
 
   return users;

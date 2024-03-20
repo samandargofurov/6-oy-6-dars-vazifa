@@ -114,6 +114,19 @@ function App() {
     setUpdateId(user.id);
   }
 
+  function handleDelete(item) {
+    let isDelete = confirm('Rostdan ham ochirmoqchimisiz')
+    if (isDelete) {
+      let copied = JSON.parse(JSON.stringify(users));
+      copied = copied.filter(user => {
+        return user.id != item.id
+      })
+
+      localStorage.setItem('users', JSON.stringify(copied))
+      setUsers(copied)
+    }
+  }
+
   return (
     <>
       <div className="container">
@@ -332,7 +345,7 @@ function App() {
                     <td>{user.nat}</td>
                     <td>
                       <div className="d-flex gap-2">
-                        <FaRegTrashAlt style={{ cursor: "pointer" }} />
+                        <FaRegTrashAlt onClick={() => {handleDelete(user)}} style={{ cursor: "pointer" }} />
                         <FaEdit
                           onClick={() => {
                             handleUpdateItem(user);
