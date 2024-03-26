@@ -49,6 +49,7 @@ function App() {
       setAge(0);
       setEmail("");
       setPass("");
+      setUsers(copied);
     }
   }
 
@@ -114,15 +115,15 @@ function App() {
   }
 
   function handleDelete(item) {
-    let isDelete = confirm('Rostdan ham ochirmoqchimisiz')
+    let isDelete = confirm("Rostdan ham ochirmoqchimisiz");
     if (isDelete) {
       let copied = JSON.parse(JSON.stringify(users));
-      copied = copied.filter(user => {
-        return user.id != item.id
-      })
+      copied = copied.filter((user) => {
+        return user.id != item.id;
+      });
 
-      localStorage.setItem('users', JSON.stringify(copied))
-      setUsers(copied)
+      localStorage.setItem("users", JSON.stringify(copied));
+      setUsers(copied);
     }
   }
 
@@ -343,10 +344,15 @@ function App() {
                       </div>
                     </td>
                     <td>{user.nat}</td>
-                    
+
                     <td>
                       <div className="d-flex gap-2">
-                        <FaRegTrashAlt onClick={() => {handleDelete(user)}} style={{ cursor: "pointer" }} />
+                        <FaRegTrashAlt
+                          onClick={() => {
+                            handleDelete(user);
+                          }}
+                          style={{ cursor: "pointer" }}
+                        />
                         <FaEdit
                           onClick={() => {
                             handleUpdateItem(user);
